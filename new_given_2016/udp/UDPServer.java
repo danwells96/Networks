@@ -43,7 +43,8 @@ public class UDPServer {
 				try{
 					recvSoc.setSoTimeout(30000);
 					recvSoc.receive(pac);
-					processMessage(new String(pac.getData()));
+					String msgin = new String(pac.getData(), 0, pac.getlength);
+					this->processMessage(msgin);
 				}catch(SocketTimeoutException e){
 					System.out.println("Socket Timed Out: " + e);
 					recvSoc.close();
