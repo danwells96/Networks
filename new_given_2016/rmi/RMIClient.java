@@ -32,7 +32,7 @@ public class RMIClient {
 		// TO-DO: Initialise Security Manager
 		try{
 			if(System.getSecurityManager() == null){
-				System.getSecurityManager(new RMISecurityManager());
+				System.setSecurityManager(new RMISecurityManager());
 			}
 		// TO-DO: Bind to RMIServer
 			try{
