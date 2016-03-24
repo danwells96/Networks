@@ -46,6 +46,7 @@ public class UDPServer {
 					processMessage(new String(pac.getData()));
 				}catch(SocketTimeoutException e){
 					System.out.println("Socket Timed Out: " + e);
+					recvSoc.close();
 				}
 			}
 		}catch(SocketException e){
