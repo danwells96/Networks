@@ -30,10 +30,22 @@ public class RMIClient {
 		int numMessages = Integer.parseInt(args[1]);
 
 		// TO-DO: Initialise Security Manager
-
+		try{
+			if(System.getSecurityManager() == null){
+				System.getSecurityManager(new RMISecurityManager());
+			}
 		// TO-DO: Bind to RMIServer
-
+			try{
+				iRMIServer = (RMIServerI) Naming.lookup(urlServer);
+			}catch(NotBoundException e){
+				System.out.println("Not Bound Exception : " + e);
+			}
 		// TO-DO: Attempt to send messages the specified number of times
-
+			for(int i = 0; i < numMessages; i++){
+				iRMIServer.receiveMessage(new MessageInfo(numMessages, i));
+			}
+		}catch(RemoteException e){
+			System.out.println("Remote Exception: " + e);
+		}
 	}
 }
