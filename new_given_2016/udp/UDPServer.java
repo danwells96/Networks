@@ -76,8 +76,8 @@ public class UDPServer {
 		//        any missing messages
 		if(totalMessages == msg.totalMessages){
 			System.out.println("Expected " + msg.totalMessages + " messages");
-			System.out.println("Received " + totalMessages + " messages");
-			System.out.println("Lost " + (msg.totalMessages - totalMessages) + " messages");
+			System.out.println("Received " + receivedMessages.length + " messages");
+			System.out.println("Lost " + (msg.totalMessages - receivedMessages.length) + " messages");
 		}
 	}
 
