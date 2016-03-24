@@ -28,12 +28,20 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 	public void receiveMessage(MessageInfo msg) throws RemoteException {
 
 		// TO-DO: On receipt of first message, initialise the receive buffer
-
+		if(totalMessages == -1){
+			totalMessages++;
+			receivedMessages = new int[msg.totalMessages];
+		}
 		// TO-DO: Log receipt of the message
-
+		totalMessages++;
+		receivedMessages[msg.messageNum] = 1;
 		// TO-DO: If this is the last expected message, then identify
 		//        any missing messages
-
+		if(totalMessages == msg.totalMessages){
+			System.out.println("Expected " + msg.totalMessages + " messages");
+			System.out.println("Received " + receivedMessages.length + " messages");
+			System.out.println("Missing " + (msg.totalMessages - receivedmessages.length) + " messages");
+		}
 	}
 
 
@@ -42,22 +50,38 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 		RMIServer rmis = null;
 
 		// TO-DO: Initialise Security Manager
-
+		if(System.getSecurityManager() == null){
+			System.setSecurityManager(new RMISecurityManager());
+		}
 		// TO-DO: Instantiate the server class
-
+		try{
+			rmis = new RMIServer();
+		}catch(RemoteException e){
+			System.out.println("Remote Exception: " + e);
+		}
 		// TO-DO: Bind to RMI registry
-
+		rebindServer("RMIServer", rmis);
 	}
 
 	protected static void rebindServer(String serverURL, RMIServer server) {
-
+		try{
 		// TO-DO:
 		// Start / find the registry (hint use LocateRegistry.createRegistry(...)
 		// If we *know* the registry is running we could skip this (eg run rmiregistry in the start script)
+			Registry r;
+			try{
 
+				r = LocateRegistry.createRegistry(1099);
+			}catch(Remote Exception e){
+				r = LocateRegistry.getRegistry();
+			}
 		// TO-DO:
 		// Now rebind the server to the registry (rebind replaces any existing servers bound to the serverURL)
 		// Note - Registry.rebind (as returned by createRegistry / getRegistry) does something similar but
 		// expects different things from the URL field.
+			r.rebind(serverURL, server);
+		}catch(RemoteException e){
+			System.out.println("Remote Exception: " + e);
+		}
 	}
 }
