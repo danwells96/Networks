@@ -30,7 +30,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 
 	private int totalMessages = -1;
 	private int[] receivedMessages;
-
+	private int receivedcount = 0;
+	
 	public RMIServer() throws RemoteException {
 	}
 
@@ -39,20 +40,27 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 		// TO-DO: On receipt of first message, initialise the receive buffer
 		if(totalMessages == -1){
 			totalMessages++;
+			receivedcount = 0;
 			receivedMessages = new int[msg.totalMessages];
 		}
 		// TO-DO: Log receipt of the message
 		totalMessages++;
 		receivedMessages[msg.messageNum] = 1;
+		receivedcount++;
 		System.out.println("Message " + msg.messageNum + " received");
 		// TO-DO: If this is the last expected message, then identify
 		//        any missing messages
 		if(msg.messageNum == totalMessages) {
-			System.out.print("The following messages are missed: ");
-	
-			for(int i = 0; i < totalMessages; i++) {
-				if(receivedMessages[i] == 0) {
-					System.out.print(i + ", ");
+			if(receivedcount == totalMessages){
+				System.out.println("No messages Missed");
+			}else{
+			
+				System.out.println("The following messages are missed: ");
+			
+				for(int i = 0; i < totalMessages; i++) {
+					if(receivedMessages[i] == 0) {
+						System.out.print(i + ", ");
+					}
 				}
 			}
 			totalMessages = -1;
