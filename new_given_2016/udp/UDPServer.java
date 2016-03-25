@@ -50,10 +50,8 @@ public class UDPServer {
 			    processMessage(new String(pac.getData()));
 			} catch (SocketTimeoutException e){
 			    System.out.println("Socket Timedout");
-			    System.out.println("Number of messages received = " + totalMessages);
-			    totalMessages = -1;
 			    recvSoc.close();
-			//	printSummary();
+			    printSummary();
 			}
 		    
 		    }
@@ -91,10 +89,7 @@ public class UDPServer {
 		// TO-DO: If this is the last expected message, then identify
 		//        any missing messages
 		if (totalMessages == msg.totalMessages){
-		    // Print summary information
-		  System.out.println("Number of messages received = " + totalMessages);
-		  totalMessages = -1;		
-		//	printSummary();
+			printSummary();
 		}
 	}
 
@@ -120,10 +115,10 @@ public class UDPServer {
 		}
 		recvPort = Integer.parseInt(args[0]);
 
-		//InetAddress addr = InetAddress.getLocalHost(); 
-		//String ipAddress = addr.getHostAddress(); 
-		//System.out.println("Local Host = " + addr); 
-		//System.out.println("Host = " + ipAddress);
+		InetAddress addr = InetAddress.getLocalHost(); 
+		String ipAddress = addr.getHostAddress(); 
+		System.out.println("Local Host = " + addr); 
+		System.out.println("Host = " + ipAddress);
 
 		// TO-DO: Construct Server object and start it by calling run().
 		UDPServer server = new UDPServer(recvPort);
