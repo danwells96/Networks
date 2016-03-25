@@ -7,6 +7,7 @@ package rmi;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.net.MalformedURLException;
 
 import common.MessageInfo;
 
