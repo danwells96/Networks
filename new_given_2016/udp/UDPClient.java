@@ -46,7 +46,7 @@ public class UDPClient {
 		// Create instance of UDP client
 		UDPClient client = new UDPClient();
 		// run UDPClient.testloop
-		client.testLoop(serverAddr,recvPort,countTo);
+		client.testLoop(serverAddr, recvPort, countTo);
 	}
 
 	public UDPClient() {
@@ -61,9 +61,9 @@ public class UDPClient {
 	private void testLoop(InetAddress serverAddr, int recvPort, int countTo) {
 		int				tries = 0;
 		// TO-DO: Send the messages to the server
-		for(;tries<countTo;tries++){
+		for(; tries<countTo; tries++){
 		    MessageInfo msg = new MessageInfo(countTo, tries);
-         	    send(msg.toString(),serverAddr,recvPort);
+         	    send(msg.toString(), serverAddr, recvPort);
 		}
 	}
 
@@ -75,17 +75,11 @@ public class UDPClient {
 		// TO-DO: build the datagram packet and send it to the server
 		pktData = payload.getBytes();
 		payloadSize = pktData.length;
-		pkt = new DatagramPacket(pktData,payloadSize,destAddr,destPort);
+		pkt = new DatagramPacket(pktData, payloadSize, destAddr, destPort);
 		try{
 		    sendSoc.send(pkt);
 		} catch (IOException e){
 		    System.out.println("IO: " + e.getMessage());
 		} 
-		// Note: we just send messages, we don't listen for a reply
-		//pkt = new DatagramPacket(pktData,payloadSize);
-		//sendSoc.receive(pkt);
-		//String received = new String(pkt.getData(), 0, pkt.getLength());
-		//System.out.println(received);
-		//sendSoc.close();
 	}
 }
