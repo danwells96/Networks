@@ -40,7 +40,7 @@ public class RMIClient {
 			try{
 				String name = "RMIServer";
 				Registry reg = LocateRegistry.getRegistry(args[0], 1099);
-				iRMIServer = (RMIServerI) Naming.lookup(name);
+				iRMIServer = (RMIServerI) reg.lookup(name);
 			}catch(NotBoundException e){
 				System.out.println("Not Bound Exception: " + e);
 			}
