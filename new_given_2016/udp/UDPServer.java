@@ -11,142 +11,143 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.InetAddress;
 import java.util.Arrays;
-import common.*;
 
+import common.MessageInfo;
+
+/**
+ * @author bandara
+ *
+ */
 public class UDPServer {
 
 	private DatagramSocket recvSoc;
 	private int totalMessages = -1;
 	private int[] receivedMessages;
 	private boolean close;
-	private static UDPServer server;
-	private static boolean initialised = false;
-	private static int received_count = 0; //Counts the amount of received messages
 
 	private void run() {
-		int 	pacSize;
-		byte[]	pacData;
+		int				pacSize;
+		byte[]			pacData;
 		DatagramPacket 	pac;
-		int 	counter = 0;
 
-		try {
-			//Initialise the variables
-			pacSize = 1000;
-			pacData = new byte[pacSize];
-			pac = new DatagramPacket(pacData, pacSize);
-			//Get the IP address and print it to the screen
-			InetAddress addr = InetAddress.getLocalHost();
-			String ipAddress = addr.getHostAddress();
-			System.out.println("Local Host = " + addr);
-			System.out.println("Host = " + ipAddress);
-			//Set timeout to 30 seconds
-			recvSoc.setSoTimeout(30000);
+		// TO-DO: Receive the messages and process them by calling processMessage(...).
+		//        Use a timeout (e.g. 30 secs) to ensure the program doesn't block forever
 
-			//Receive messages
-			while(true)
-			{
-				try{
-					recvSoc.receive(pac);
-					String data = new String(pac.getData(), 0, pac.getLength());
-					server.processMessage(data);
-				}
-				catch (SocketTimeoutException e){
-					System.out.println("Timeout of 30 seconds reached!");
-					System.out.println("The following messages were not received: ");
+		
+		pacSize = 1024;
+		pacData = new byte[pacSize];
 
-					for(int i = 0; i < totalMessages; i++)
-					{
-						if(receivedMessages[i] == 0)
-							System.out.println(i+1);
-					}
-
-					System.out.println("Total amount of messages received = " + received_count);
-					System.out.println("Amount of unreceived messages = " + (totalMessages - received_count));
-
-					initialised = false;
-					received_count = 0;
-					recvSoc.close();
-				}
+		try{
+		    while(true){
+			
+			for(int n = 0; n < pacSize; n++)
+			    pacData[n] = 0;
+			pac = new DatagramPacket(pacData,pacSize);
+			try{
+			    recvSoc.setSoTimeout(30000);
+			    recvSoc.receive(pac);
+			    processMessage(new String(pac.getData()));
+			} catch (SocketTimeoutException e){
+			    // Print summary information
+			    //System.out.println("Number of messages received = " + totalMessages);
+			    //totalMessages = -1;
+				printSummary();
 			}
+		    
+		    }
+		} catch(SocketException e){
+		    System.out.println("Socket exception: " + e.getMessage());
+		} catch(IOException e){
+		    System.out.println("IO exception: " + e.getMessage());
 		}
-		catch (SocketException e1) {
-			System.out.println("Socket closed " + e1);
-		}
-		catch (IOException e2) {
-			e2.printStackTrace();
-		}
+
 	}
 
 	public void processMessage(String data) {
 
+		MessageInfo msg = null;
+
+		// TO-DO: Use the data to construct a new MessageInfo object
+
 		try{
-			MessageInfo msg;
-			int messageNum;
-			msg = new MessageInfo(data);
-			totalMessages = msg.totalMessages;
-			messageNum = msg.messageNum;
-			
-			//If the receivedMessages array hasn't been initialised, initialise it
-			if(initialised == false)
-			{
-				receivedMessages = new int[totalMessages];
-				initialised = true;
-				for(int counter = 0; counter < totalMessages; counter++)
-					receivedMessages[counter] = 0;
-			}
-
-			receivedMessages[messageNum - 1] = 1; //1 if received
-			
-			if(receivedMessages[messageNum - 1] == 1)
-				received_count++;
-
-			System.out.println("Message " + messageNum + " was received");
-
-			//After the last message is received print the outcomes to the screen
-			if(messageNum == totalMessages)
-			{
-				System.out.println("The following messages were not received: ");
-				for(int i = 0; i < totalMessages; i++)
-				{
-					if(receivedMessages[i] == 0)
-						System.out.println(i+1);
-				}
-
-				System.out.println("Total amount of messages received = " + received_count);
-				System.out.println("Amount of unreceived messages = " + (totalMessages - received_count));
-
-				initialised = false;
-				received_count = 0;
-			}		
+		    msg = new MessageInfo(data.trim());
+		} catch(Exception e){
+		    e.printStackTrace();
 		}
-		catch (Exception e) {
-			e.printStackTrace();
+
+		// TO-DO: On receipt of first message, initialise the receive buffer
+		if (receivedMessages == null){
+		    totalMessages = 0;
+		    // Create an array of 'totalMessages' zeros
+		    receivedMessages = new int[msg.totalMessages];
+		}
+
+		// TO-DO: Log receipt of the message
+		totalMessages++;
+		receivedMessages[msg.messageNum] = 1;
+
+		// TO-DO: If this is the last expected message, then identify
+		//        any missing messages
+		if (totalMessages == msg.totalMessages){
+		    // Print summary information
+		    //System.out.println("Number of messages received = " + totalMessages);
+		    //totalMessages = -1;		
+			printSummary();
 		}
 	}
 
+
 	public UDPServer(int rp) {
-
-		try{
-			recvSoc = new DatagramSocket(rp);
+		// TO-DO: Initialise UDP socket for receiving data
+	        try{
+		    recvSoc = new DatagramSocket(rp);
+		} catch (SocketException e){
+		    System.out.println("Socket: " + e.getMessage());
 		}
-		catch (SocketException e) {
-			System.out.println("Socket Exception " + e);
-		}
-
+		// Done Initialisation
 		System.out.println("UDPServer ready");
 	}
 
 	public static void main(String args[]) {
-
 		int	recvPort;
 
+		// Get the parameters from command line
 		if (args.length < 1) {
 			System.err.println("Arguments required: recv port");
 			System.exit(-1);
 		}
 		recvPort = Integer.parseInt(args[0]);
 
-		server = new UDPServer(recvPort);
+		//InetAddress addr = InetAddress.getLocalHost(); 
+		//String ipAddress = addr.getHostAddress(); 
+		//System.out.println("Local Host = " + addr); 
+		//System.out.println("Host = " + ipAddress);
+
+		// TO-DO: Construct Server object and start it by calling run().
+		UDPServer server = new UDPServer(recvPort);
 		server.run();
+	}
+
+	public void printSummary(){
+
+			if(receivedMessage == null || totalMessage <= 0)
+				return;
+			
+			String missingMessages = "";
+			for(int i = 0; i <receivedMessages.length; i++)
+				if(receivedMessages[i] == 0)
+					missingMessages += i + ", ";
+				
+			System.out.println("******* SUMMARY *******");
+			Systen.out.println("Number of messages received: " + totalMessages);
+			if(totalMessages == receivedMessages.length)
+				System.out.println("No missing messages!");
+			else
+				System.out.println("Lost Messages: " + missingMessages);
+			receivedMessages = null;
+			totalMessages = -1;
+
+
+
 	}
 }
