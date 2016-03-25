@@ -39,7 +39,10 @@ public class RMIClient {
 			try{
 				iRMIServer = (RMIServerI) Naming.lookup(urlServer);
 			}catch(NotBoundException e){
-				System.out.println("Not Bound Exception : " + e);
+				System.out.println("Not Bound Exception: " + e);
+			}
+			catch(MalformedURLException e2){
+				System.out.println("MalformedURLException: " + e2);
 			}
 		// TO-DO: Attempt to send messages the specified number of times
 			for(int i = 0; i < numMessages; i++){
