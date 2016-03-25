@@ -83,7 +83,8 @@ public class RMIServer extends UnicastRemoteObject implements RMIServerI {
 			System.out.println("Remote Exception: " + e);
 		}
 		// TO-DO: Bind to RMI registry
-		rebindServer("RMIServer", rmis);
+		String urlName = new String("RMIServer");
+		rebindServer(urlName, rmis);
 	}
 
 	protected static void rebindServer(String serverURL, RMIServer server) {
