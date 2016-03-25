@@ -33,25 +33,26 @@ public class UDPServer {
 		// TO-DO: Receive the messages and process them by calling processMessage(...).
 		//        Use a timeout (e.g. 30 secs) to ensure the program doesn't block forever
 
-		
+		//initializes packet parameters
 		pacSize = 1024;
 		pacData = new byte[pacSize];
 
 		try{
 		    while(true){
-			
+			//initialises packet data to 0
 			for(int n = 0; n < pacSize; n++){
 			    pacData[n] = 0;
 			}
 			pac = new DatagramPacket(pacData,pacSize);
+			//creates a new datagram packet with received data
 			try{
-			    recvSoc.setSoTimeout(30000);
-			    recvSoc.receive(pac);
-			    processMessage(new String(pac.getData()));
+			    recvSoc.setSoTimeout(30000);	//timeout = 30s
+			    recvSoc.receive(pac);		//receives new packet
+			    processMessage(new String(pac.getData()));	//extracts data from packet
 			} catch (SocketTimeoutException e){
 			    System.out.println("Socket Timedout");
-			  //  recvSoc.close();
-			    printSummary();
+			    //prints the status of any missing packets and which packets arrived
+			    printSummary();	
 			}
 		    
 		    }
@@ -68,7 +69,7 @@ public class UDPServer {
 		MessageInfo msg = null;
 
 		// TO-DO: Use the data to construct a new MessageInfo object
-
+		//constructs a new packet in order to deconstruct it into data components
 		try{
 		    msg = new MessageInfo(data.trim());
 		} catch(Exception e){
@@ -85,7 +86,7 @@ public class UDPServer {
 		// TO-DO: Log receipt of the message
 		totalMessages++;
 		receivedMessages[msg.messageNum] = 1;
-
+		//counts any incoming messages
 		// TO-DO: If this is the last expected message, then identify
 		//        any missing messages
 		if (totalMessages == msg.totalMessages){
@@ -96,6 +97,7 @@ public class UDPServer {
 
 	public UDPServer(int rp) {
 		// TO-DO: Initialise UDP socket for receiving data
+		//initializes input data socket
 	        try{
 		    recvSoc = new DatagramSocket(rp);
 		} catch (SocketException e){
@@ -116,7 +118,9 @@ public class UDPServer {
 		recvPort = Integer.parseInt(args[0]);
 
 		// TO-DO: Construct Server object and start it by calling run().
+		//creates new instance of a UDPServer
 		UDPServer server = new UDPServer(recvPort);
+		//calls the operation on the server to receive data
 		server.run();
 	}
 
