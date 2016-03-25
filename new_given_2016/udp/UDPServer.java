@@ -140,7 +140,7 @@ public class UDPServer {
 		
 			System.out.println("Number of messages received: " + totalMessages);
 			if(totalMessages == receivedMessages.length){
-				System.out.println("No missing messages!");
+				System.out.println("No missing messages");
 			}else{
 				System.out.println("Lost Messages: " + missingMessages);
 			}
