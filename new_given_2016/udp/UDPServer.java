@@ -26,8 +26,8 @@ public class UDPServer {
 	private boolean close;
 
 	private void run() {
-		int				pacSize;
-		byte[]			pacData;
+		int		pacSize;
+		byte[]		pacData;
 		DatagramPacket 	pac;
 
 		// TO-DO: Receive the messages and process them by calling processMessage(...).
@@ -40,18 +40,19 @@ public class UDPServer {
 		try{
 		    while(true){
 			
-			for(int n = 0; n < pacSize; n++)
+			for(int n = 0; n < pacSize; n++){
 			    pacData[n] = 0;
+			}
 			pac = new DatagramPacket(pacData,pacSize);
 			try{
 			    recvSoc.setSoTimeout(30000);
 			    recvSoc.receive(pac);
 			    processMessage(new String(pac.getData()));
 			} catch (SocketTimeoutException e){
-			    // Print summary information
-			    //System.out.println("Number of messages received = " + totalMessages);
-			    //totalMessages = -1;
-				printSummary();
+			    System.out.println("Socket Timedout");
+			    System.out.println("Number of messages received = " + totalMessages);
+			    totalMessages = -1;
+			//	printSummary();
 			}
 		    
 		    }
@@ -90,9 +91,9 @@ public class UDPServer {
 		//        any missing messages
 		if (totalMessages == msg.totalMessages){
 		    // Print summary information
-		    //System.out.println("Number of messages received = " + totalMessages);
-		    //totalMessages = -1;		
-			printSummary();
+		  System.out.println("Number of messages received = " + totalMessages);
+		  totalMessages = -1;		
+		//	printSummary();
 		}
 	}
 
@@ -130,20 +131,23 @@ public class UDPServer {
 
 	public void printSummary(){
 
-			if(receivedMessage == null || totalMessage <= 0)
+			if(receivedMessage == null || totalMessage <= 0){
 				return;
+			}
 			
 			String missingMessages = "";
-			for(int i = 0; i <receivedMessages.length; i++)
-				if(receivedMessages[i] == 0)
+			for(int i = 0; i <receivedMessages.length; i++){
+				if(receivedMessages[i] == 0){
 					missingMessages += i + ", ";
-				
-			System.out.println("******* SUMMARY *******");
+				}
+			}	
+		
 			Systen.out.println("Number of messages received: " + totalMessages);
-			if(totalMessages == receivedMessages.length)
+			if(totalMessages == receivedMessages.length){
 				System.out.println("No missing messages!");
-			else
+			}else{
 				System.out.println("Lost Messages: " + missingMessages);
+			}
 			receivedMessages = null;
 			totalMessages = -1;
 
