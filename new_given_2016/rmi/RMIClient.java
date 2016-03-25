@@ -38,7 +38,7 @@ public class RMIClient {
 		// TO-DO: Bind to RMIServer
 			try{
 				String name = "RMIServer";
-				Registry reg = LoacteRegistry.getRegistry(args[0], 1099);
+				Registry reg = LocateRegistry.getRegistry(args[0], 1099);
 				iRMIServer = (RMIServerI) Naming.lookup(name);
 			}catch(NotBoundException e){
 				System.out.println("Not Bound Exception: " + e);
