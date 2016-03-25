@@ -115,11 +115,6 @@ public class UDPServer {
 		}
 		recvPort = Integer.parseInt(args[0]);
 
-		InetAddress addr = InetAddress.getLocalHost(); 
-		String ipAddress = addr.getHostAddress(); 
-		System.out.println("Local Host = " + addr); 
-		System.out.println("Host = " + ipAddress);
-
 		// TO-DO: Construct Server object and start it by calling run().
 		UDPServer server = new UDPServer(recvPort);
 		server.run();
