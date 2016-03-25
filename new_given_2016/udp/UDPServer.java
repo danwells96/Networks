@@ -52,6 +52,7 @@ public class UDPServer {
 			    System.out.println("Socket Timedout");
 			    System.out.println("Number of messages received = " + totalMessages);
 			    totalMessages = -1;
+			    recvSoc.close();
 			//	printSummary();
 			}
 		    
