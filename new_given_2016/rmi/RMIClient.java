@@ -37,8 +37,9 @@ public class RMIClient {
 			}
 		// TO-DO: Bind to RMIServer
 			try{
-				
-				iRMIServer = (RMIServerI) Naming.lookup(urlServer);
+				String name = "RMIServer";
+				Registry reg = LoacteRegistry.getRegistry(args[0], 1099);
+				iRMIServer = (RMIServerI) Naming.lookup(name);
 			}catch(NotBoundException e){
 				System.out.println("Not Bound Exception: " + e);
 			}
@@ -47,8 +48,7 @@ public class RMIClient {
 			}
 		// TO-DO: Attempt to send messages the specified number of times
 			for(int i = 0; i < numMessages; i++){
-				MessageInfo msg = new MessageInfo(numMessages, i);
-				iRMIServer.receiveMessage(msg);
+				iRMIServer.receiveMessage(new MessageInfo(numMessages, i));
 			}
 		}catch(RemoteException e){
 			System.out.println("Remote Exception: " + e);
