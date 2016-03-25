@@ -132,7 +132,7 @@ public class UDPServer {
 
 	public void printSummary(){
 
-			if(receivedMessage == null || totalMessage <= 0){
+			if(receivedMessages == null || totalMessages <= 0){
 				return;
 			}
 			
@@ -143,7 +143,7 @@ public class UDPServer {
 				}
 			}	
 		
-			Systen.out.println("Number of messages received: " + totalMessages);
+			System.out.println("Number of messages received: " + totalMessages);
 			if(totalMessages == receivedMessages.length){
 				System.out.println("No missing messages!");
 			}else{
