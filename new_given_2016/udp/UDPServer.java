@@ -50,7 +50,7 @@ public class UDPServer {
 			    processMessage(new String(pac.getData()));
 			} catch (SocketTimeoutException e){
 			    System.out.println("Socket Timedout");
-			    recvSoc.close();
+			  //  recvSoc.close();
 			    printSummary();
 			}
 		    
